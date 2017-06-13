@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    
+    #box {
+      width: 900px;
+      margin: 100px auto;
+      cursor: pointer;
+      
+    }
+    
+    #imageList {
+      width: 1000%;
+      height: 340px;
+      position: absolute;
+    }
+    
+    .inner {
+      width: 790px;
+      height: 340px;
+      border: 10px solid hotpink;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .inner li {
+      float: left;
+    }
+    
+    #arr {
+      display: none;
+    }
+    
+    #arrLeft, #arrRight {
+      position: absolute;
+      width: 30px;
+      height: 60px;
+      top: 170px;
+      margin-top: -30px;
+      background-color: rgba(0, 0, 0, .3);
+      text-align: center;
+      line-height: 60px;
+      font: 700 16px/60px "microsoft yahei";
+    }
+    
+    #arrLeft {
+      left: 0;
+    }
+    
+    #arrRight {
+      right: 0;
+    }
+    
+    #circle {
+      position: absolute;
+      width: 280px;
+      height: 30px;
+      left: 395px;
+      margin-left: -140px;
+      background-color: rgba(255, 255, 255, .3);
+      bottom: 15px;
+      border-radius: 20px;
+      line-height: 30px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #circle i {
+      background-color: #fff;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+    }
+
+    #circle .current {
+      background-color: #ff8800;
+    }
+  </style>
+</head>
+<body>
+<div id="box">
+  <div class="inner">
+    <ul id="imageList">
+      <li><img src="images/1.jpg" alt=""></li>
+      <li><img src="images/2.jpg" alt=""></li>
+      <li><img src="images/3.jpg" alt=""></li>
+      <li><img src="images/4.jpg" alt=""></li>
+      <li><img src="images/5.jpg" alt=""></li>
+      <li><img src="images/6.jpg" alt=""></li>
+      <li><img src="images/7.jpg" alt=""></li>
+      <li><img src="images/8.jpg" alt=""></li>
+      <li><img src="images/1.jpg" alt=""></li>
+    </ul>
+    <div id="arr">
+      <span id="arrLeft">&lt;</span><span id="arrRight">&gt;</span>
+    </div>
+    <div id="circle">
+      <i class="current">1</i>
+      <i>2</i>
+      <i>3</i>
+      <i>4</i>
+      <i>5</i>
+      <i>6</i>
+      <i>7</i>
+      <i>8</i>
+    </div>
+  </div>
+
+</div>
+<script src="../animate.js"></script>
+<script>
+  var box = document.getElementById("box");
+  var arr = document.getElementById("arr");
+  var arrLeft = document.getElementById("arrLeft");
+  var arrRight = document.getElementById("arrRight");
+  var ul = document.getElementById("imageList");
+  var lis = ul.children;
+  var inner = box.children[0];
+  var imgWidth = lis[0].offsetWidth;
+  var circle = document.getElementById("circle");
+  var lins = circle.children;
+  var timer;
+  //console.log(imgWidth);
+  box.onmouseover = function () {
+    arr.style.display = "block";
+    clearInterval(timer);
+  };
+  box.onmouseout = function () {
+    arr.style.display = "none";
+    timer = setInterval(function () {
+      arrRight.onclick();
+    }, 1000);
+  };
+  //给左右箭头注册点击事件
+  var count = 0;
+  var currentIndex = 0;
+  arrRight.onclick = function () {
+    currentIndex++;
+    for (var i = 0; i < lins.length; i++) {
+      lins[i].className = "";
+    }
+    lins[currentIndex].className = "current";
+    if (count >= lis.length - 1) {
+      count = 0;
+      ul.style.left = "0px";
+    }
+    //alert("hf jk ");
+    count++;
+
+    var target = -imgWidth * count;
+    animate(ul, target);
+  };
+  arrLeft.onclick = function () {
+    count--;
+    if (count <= 0) {
+      count = lis.length - 1;
+      ul.style.left = -imgWidth * count + "px";
+    }
+    
+    var target = -imgWidth * count;
+    animate(ul, target);
+  };
+  timer = setInterval(function () {
+    arrRight.onclick();
+  }, 1000);
+
+
+  //给所有的i注册鼠标经过事件
+  for (var i = 0; i < lins.length; i++) {
+    lins[i].index = i;
+    lins[i].onmouseover = function () {
+      //alert("jkd d");
+      //排他
+      //干掉所有人
+      currentIndex = this.index;
+      for (var i = 0; i < lins.length; i++) {
+        lins[i].className = "";
+      }
+      //复活我自己
+      this.className = "current";
+      var target = -this.index * imgWidth;
+      animate(ul, target);
+    };
+  }
+</script>
+</body>
+</html>
